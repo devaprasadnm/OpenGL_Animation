@@ -4,9 +4,9 @@ from OpenGL.GLUT import *
 
 import math
 
-r,x,y=10,0,50
-R=40
-theta=0.0
+r,x,y=10,-90,10
+state = 1
+
 
 def glClearScreen():
 	glClearColor(0.0,0.0,0.0,1.0)
@@ -25,20 +25,35 @@ def drawSphere(rad,xc,yc,rgb):
 	glFlush()
 	
 def update(value):
-	global x,y,r,R,theta
+	global x,y,r,state
 	glutPostRedisplay()
 	glutTimerFunc(int(1000/60),update,0)
-	x = (r+R)*math.cos(math.pi*theta/180)
-	y = (r+R)*math.sin(math.pi*theta/180)
-	theta +=1
-		
+	if state ==1 :
+		if y<70:
+			y+=1.5
+			x+=0.5
+		else:
+			state = 0
+	else:
+		if y>10:
+			y-=1.5
+			x+=0.5
+		else:
+			state=1
+			
+def drawLine():
+	glColor3f(0.0,1.0,0.0)
+	glBegin(GL_LINES)
+	glVertex2f(-100,0)
+	glVertex2f(100,0)
+	glEnd()	
+
 def display():
-	global r,R,x,y
+	global r,x,y
 	glClear(GL_COLOR_BUFFER_BIT)
 	rgb1=(0.0,1.0,1.0)
-	rgb2=(1.0,1.0,0.0)
-	drawSphere(R,0,0,rgb1)
-	drawSphere(r,x,y,rgb2)
+	drawSphere(r,x,y,rgb1)
+	drawLine()
 	glutSwapBuffers()
 
 def main():
@@ -46,7 +61,7 @@ def main():
 	glutInitDisplayMode(GLUT_RGB|GLUT_DOUBLE) 
 	glutInitWindowPosition(50,50)
 	glutInitWindowSize(768,768)
-	glutCreateWindow("Animation_Rolling ball over the sphere")
+	glutCreateWindow("Animation_Bouncing ball")
 	glutDisplayFunc(display)
 	glutTimerFunc(0,update,0)
 	glClearScreen()
